@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-import './FactoryStates.sol';
+import './FactoryStatesV2.sol';
 
 pragma solidity ^0.8.13;
 
-abstract contract FactoryModifiers is FactoryStates {
+abstract contract FactoryModifiersV2 is FactoryStatesV2 {
     modifier onlyOwner() {
         _onlyOwner();
         _;

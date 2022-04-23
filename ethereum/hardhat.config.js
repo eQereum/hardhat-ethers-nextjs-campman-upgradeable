@@ -2,6 +2,7 @@ require('hardhat-contract-sizer');
 require('dotenv').config(); 
 require('@nomiclabs/hardhat-ethers');
 require('@nomiclabs/hardhat-waffle');
+require('@nomiclabs/hardhat-etherscan');
 require('@openzeppelin/hardhat-upgrades');
 
 const MNEMONIC = process.env.MNEMONIC;
@@ -45,7 +46,7 @@ module.exports = {
     ].map((opt) => ({ ...opt, settings })),
   },
 
-  defaultNetwork: 'rinkeby',
+  defaultNetwork: 'localhost',
   networks: {
     hardhat: {
       forking: {

@@ -1,16 +1,15 @@
 {
-  "name": "hardhat-ethers-nextjs-campman",
+  "name": "hardhat-ethers-nextjs-campman-upgradeable",
   "version": "1.0.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/0xhamedETH/hardhat-ethers-nextjs-campman.git"
+    "url": "https://github.com/0xhamedETH/hardhat-ethers-nextjs-campman-upgradeable.git"
   },
   "author": "0xhamedETH",
-
-  "homepage": "https://github.com/0xhamedETH/hardhat-ethers-nextjs-campman",
+  "homepage": "https://github.com/0xhamedETH/hardhat-ethers-nextjs-campman-upgradeable",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",
     "@nomiclabs/hardhat-etherscan": "^3.0.3",

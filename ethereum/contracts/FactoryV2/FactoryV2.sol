@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import './FactoryModifiers.sol';
-import './FactoryLogics.sol';
+import './FactoryModifiersV2.sol';
+import './FactoryLogicsV2.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
-contract Factory is Initializable, FactoryModifiers, FactoryLogics {
+contract FactoryV2 is Initializable, FactoryModifiersV2, FactoryLogicsV2 {
     function initialize() public initializer {
         factoryStatus.owner = payable(msg.sender);
         factoryStatus.tax = 0.01 * 10**18;

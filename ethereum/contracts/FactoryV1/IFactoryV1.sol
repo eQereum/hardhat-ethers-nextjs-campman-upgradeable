@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-interface IFactory {
+interface IFactoryV1 {
     struct FactoryStatus {
         address payable owner;
         uint64 tax;

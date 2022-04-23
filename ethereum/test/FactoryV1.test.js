@@ -1,14 +1,14 @@
 const { expect } = require('chai');
 const { ethers, upgrades } = require('hardhat');
 
-describe('Campaign Factory Contract -----------------------------------------------------', () => {
+describe('FactoryV1 Contract -----------------------------------------------------', () => {
   let owner, manager1, manager2, investor1, investor2, attacker1, attacker2, another, hardhatCampiagnFactory, deployedAddress2, deployedAddress3, campaignAddress;
   const provider = ethers.provider;
 
   //  Upgradeable Initialization
   before(async () => {
     [owner, manager1, manager2, investor1, investor2, attacker1, attacker2, another] = await ethers.getSigners();
-    const implementation = await ethers.getContractFactory('Factory');
+    const implementation = await ethers.getContractFactory('FactoryV1');
     hardhatCampiagnFactory = await upgrades.deployProxy(implementation, {
       initializer: 'initialize',
     });
@@ -126,21 +126,21 @@ describe('Campaign Factory Contract --------------------------------------------
 
     it('should revert because of tax', async () => {
       await expect(
-        hardhatCampiagnFactory.connect(manager1).createCampaign(ethers.utils.formatBytes32String('campM11'), 'descM11', 'ipfsM11', min, period, { value: 0, gasLimit: 30000000 })
+        hardhatCampiagnFactory.connect(manager1).createCampaign(ethers.utils.formatBytes32String('campM11'), 'descM11', 'ipfsM11', min, period, { value: 0, gasLimit: 80000 })
       ).to.be.revertedWith('!Tax');
     });
 
     it('should revert because of description length', async () => {
       const desc = Array(257).fill(0).toString().replaceAll(',', '');
       await expect(
-        hardhatCampiagnFactory.connect(manager1).createCampaign(ethers.utils.formatBytes32String('campM11'), desc, 'ipfsM11', min, period, { value: tax, gasLimit: 30000000 })
+        hardhatCampiagnFactory.connect(manager1).createCampaign(ethers.utils.formatBytes32String('campM11'), desc, 'ipfsM11', min, period, { value: tax, gasLimit: 80000 })
       ).to.be.revertedWith('Campaign Description is too Big');
     });
 
     it('should pass campaign creation by manager1', async () => {
       const createCampaignTx = await hardhatCampiagnFactory
         .connect(manager1)
-        .createCampaign(ethers.utils.formatBytes32String('campM11'), 'descM11', 'ipfsM11', min, period, { value: tax, gasLimit: 30000000 });
+        .createCampaign(ethers.utils.formatBytes32String('campM11'), 'descM11', 'ipfsM11', min, period, { value: tax, gasLimit: 5000000 });
       const receipt = await createCampaignTx.wait();
       deployedAddress = receipt.events[0].args.createdCampaignAddress;
       deployedAddressToken = receipt.events[0].args.createdCampaignTokenAddress;
@@ -158,8 +158,8 @@ describe('Campaign Factory Contract --------------------------------------------
       period = 2000;
 
       const [deployTransaction2, deployTransaction3] = await Promise.all([
-        hardhatCampiagnFactory.connect(manager1).createCampaign(ethers.utils.formatBytes32String('campM12'), 'descM12', 'ipfsM12', min, period, { value: tax, gasLimit: 30000000 }),
-        hardhatCampiagnFactory.connect(manager2).createCampaign(ethers.utils.formatBytes32String('campM21'), 'descM21', 'ipfsM21', min, period, { value: tax, gasLimit: 30000000 }),
+        hardhatCampiagnFactory.connect(manager1).createCampaign(ethers.utils.formatBytes32String('campM12'), 'descM12', 'ipfsM12', min, period, { value: tax, gasLimit: 5000000 }),
+        hardhatCampiagnFactory.connect(manager2).createCampaign(ethers.utils.formatBytes32String('campM21'), 'descM21', 'ipfsM21', min, period, { value: tax, gasLimit: 5000000 }),
       ]);
 
       const [receipt2, receipt3] = await Promise.all([deployTransaction2.wait(), deployTransaction3.wait()]);

@@ -1,26 +1,25 @@
-// or
 const { ethers, upgrades } = require('hardhat');
 const path = require('path');
 const fs = require('fs-extra');
 
 // ----------------------------------------------------- config -----------------------------------------------------
-const projectName = 'Factory';
-const projectVersion = '1.0';
-const contractName = 'Factory'; // example: ContractA for `contract ContractA {}`
-const sourceFilename = 'Factory'; // example: "source" for source.sol
-const networkName = 'maticMumbai'; //example: "rinkeby"
-const pathSource = `./artifacts/contracts/Factory/Factory.sol/Factory.json`;
-// `npx hardhat run scripts/deploy_Factory_v1.js --network ${networkName}`;
+const projectName = 'FactoryV2';
+const projectVersion = '2.0';
+const contractName = 'FactoryV2'; // example: ContractA for `contract ContractA {}`
+const networkName = 'rinkeby'; //example: "rinkeby"
+const pathSource = `./artifacts/contracts/FactoryV2/FactoryV2.sol/FactoryV2.json`;
+const proxyAddress = 'fill with TransparentUpgradeableProxy contract address';
+const buildPath = path.resolve(__dirname, '../../client/src/contracts');
+
+// `npx hardhat run scripts/deploy_Factory_v2.js`;
 // ------------------------------------------------------------------------------------------------------------------
 
 const main = async () => {
   const [deployer] = await ethers.getSigners();
 
-  const implementation = await ethers.getContractFactory(contractName);
-  console.log(`Deploying Implementation ${projectName} ...`);
-  const proxy = await upgrades.deployProxy(implementation, {
-    initializer: 'initialize',
-  });
+  const newImplementation = await ethers.getContractFactory(contractName);
+  console.log('Deploying Implementation Contract Factory ...');
+  const proxy = await upgrades.upgradeProxy(proxyAddress, newImplementation);
   console.log(`Proxy version ${projectVersion} deployed to:`, proxy.address);
 
   const proxyContractAddress = JSON.parse(JSON.stringify(proxy.address));
@@ -35,20 +34,16 @@ const makeOutputSummary = (pathSource, proxyContractAddress, owner, networkId, d
   let readableSource = fs.readFileSync(pathSource, 'utf8');
   readableSource = JSON.parse(readableSource);
 
-  const buildPath = path.resolve(__dirname, '../../client/src/contracts');
   // fs.removeSync(buildPath);
   fs.ensureDirSync(buildPath);
 
   var input = {
     language: 'Solidity',
-    contractName: `Proxy_${projectName}v${projectVersion}`,
-    projectVersion: projectVersion,
+    contractName: `ProxyProject_${projectName}v${projectVersion}`,
     proxyContractAddress: proxyContractAddress,
     onwer: owner,
-    networkName: networkName,
     networkId: networkId,
-    fullBytecodeSizeKB: (readableSource.bytecode.length - 2) / 2000,
-    deployedBytecodeSizeKB: (readableSource.deployedBytecode.length - 2) / 2000,
+    networkName: networkName,
     deployProxyTrancationHash: deployProxyTrancationHash,
     abi: readableSource.abi,
     bytecode: readableSource.bytecode,
@@ -56,7 +51,6 @@ const makeOutputSummary = (pathSource, proxyContractAddress, owner, networkId, d
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
       },
       outputSelection: {
         '*': {
@@ -67,7 +61,7 @@ const makeOutputSummary = (pathSource, proxyContractAddress, owner, networkId, d
   };
 
   let output = JSON.parse(JSON.stringify(input));
-  const jsonOutput = fs.outputJsonSync(path.resolve(buildPath, `${projectName}-${networkName}.json`), output);
+  const jsonOutput = fs.outputJsonSync(path.resolve(buildPath, `${projectName}-v${projectVersion}-${networkName}.json`), output);
 };
 
 main()

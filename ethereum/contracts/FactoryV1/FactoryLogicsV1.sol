@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-import './FactoryStates.sol';
+import './FactoryStatesV1.sol';
 
 pragma solidity ^0.8.13;
 
-abstract contract FactoryLogics is FactoryStates {
+abstract contract FactoryLogicsV1 is FactoryStatesV1 {
     function _Pause() internal {
         factoryStatus.isPaused = true;
         emit Paused();
